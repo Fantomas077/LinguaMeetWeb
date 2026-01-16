@@ -1,11 +1,19 @@
-﻿using System;
+﻿using LinguaMeet.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace LinguaMeet.Infrastructure.Data
 {
-    public class ApplicationDbContext
+    public class ApplicationDbContext:DbContext
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+
+        }
+        public DbSet<Event>Events { get; set; }
 
     }
+    
 }

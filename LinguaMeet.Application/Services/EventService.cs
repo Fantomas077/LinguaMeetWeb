@@ -1,4 +1,5 @@
 ﻿
+using LinguaMeet.Application.Common.Exceptions;
 using LinguaMeet.Application.Common.Interfaces;
 using LinguaMeet.Domain.Entities;
 using System;
@@ -19,20 +20,53 @@ namespace LinguaMeet.Application.Services
         public async Task CancelEventAsync(int eventId)
         {
             var obj = await _rep.GetEventByIdAsync(eventId);
-            if(obj!=null)
+            if (obj == null)
             {
-                if (obj.EventStatus != EventStatus.Finished)
-                {
-                    obj.EventStatus = EventStatus.Cancelled;
-                    await _rep.UpdateAsync(obj);
+                throw new NotFoundException("Event not found");
+            }
+               
 
-                }
-                else
-                    throw new Exception("Event can not be cancelled");
+            if (obj.EventStatus == EventStatus.Finished)
+            {
+                throw new InvalidEventOperationException("Event cannot be cancelled");
+
+            }
+               
+
+            obj.EventStatus = EventStatus.Cancelled;
+            await _rep.UpdateAsync(obj);
+
+        }
+        public async Task FinishEventAsync(int eventId)
+        {
+            var obj = await _rep.GetEventByIdAsync(eventId);
+            if (obj == null)
+            {
+
+                throw new NotFoundException("Event not found");
+
             }
 
-            throw new Exception("Element introuvable");
+            if (obj.EventStatus == EventStatus.Cancelled || DateTime.Now <= obj.EndDate)
+            {
+                throw new InvalidEventOperationException("Event cannot be finished");
+            }
+              
+           
+                obj.EventStatus = EventStatus.Finished;
+                await _rep.UpdateAsync(obj);
+
         }
-       
+        public async Task<IEnumerable<Event>> GetUpcomingEventsByCityAsync(string city)
+        {
+            var events = await _rep.GetEventsByCityAsync(city);
+
+            
+            var upcomingEvents = events.Where(o => o.StartDate > DateTime.Now && o.EventStatus == EventStatus.Published);
+
+            return upcomingEvents;
+        }
+
+
     }
 }

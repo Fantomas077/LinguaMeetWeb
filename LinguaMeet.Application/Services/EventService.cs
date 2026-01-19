@@ -67,6 +67,73 @@ namespace LinguaMeet.Application.Services
             return upcomingEvents;
         }
 
+        public async Task<Event> CreateEventAsync(Event newEvent)
+        {
+            
+            if (string.IsNullOrWhiteSpace(newEvent.Title))
+                throw new InvalidEventOperationException("Title is required");
+
+            if (newEvent.StartDate >= newEvent.EndDate)
+                throw new InvalidEventOperationException("Start date must be before end date");
+
+            if (newEvent.Capacity <= 0)
+                throw new InvalidEventOperationException("Capacity must be greater than 0");
+            if(string.IsNullOrEmpty(newEvent.CoverPhotoPath))
+                throw new InvalidEventOperationException("Cover photo is required");
+
+
+
+            newEvent.EventStatus = EventStatus.Published;
+
+            await _rep.AddAsync(newEvent);
+
+            return newEvent;
+        }
+        public async Task<Event> EditEventAsync(Event newEvent)
+        {
+            var obj = await _rep.GetEventByIdAsync(newEvent.Id);
+            if (obj == null)
+            {
+                throw new NotFoundException("Event not found");
+            }
+            if(obj.EventStatus==EventStatus.Cancelled || obj.EventStatus==EventStatus.Finished)
+            {
+                
+                    throw new InvalidEventOperationException("can not  be  modified");
+            }
+            if (string.IsNullOrWhiteSpace(obj.CoverPhotoPath) && string.IsNullOrWhiteSpace(newEvent.CoverPhotoPath))
+            {
+                throw new InvalidEventOperationException("Cover photo is required");
+            }
+            if (!string.IsNullOrWhiteSpace(newEvent.CoverPhotoPath))
+            {
+                obj.CoverPhotoPath = newEvent.CoverPhotoPath;
+            }
+
+
+            if (string.IsNullOrWhiteSpace(newEvent.Title))
+                throw new InvalidEventOperationException("Title is required");
+
+            if (newEvent.StartDate >= newEvent.EndDate)
+                throw new InvalidEventOperationException("Start date must be before end date");
+
+            if (newEvent.Capacity <= 0)
+                throw new InvalidEventOperationException("Capacity must be greater than 0");
+
+            obj.Capacity = newEvent.Capacity;
+            obj.StartDate = newEvent.StartDate;
+            obj.EndDate = newEvent.EndDate;
+            obj.City = newEvent.City;
+            obj.Adresse = newEvent.Adresse;
+            obj.Description = newEvent.Description;
+           
+
+            obj.EventStatus = EventStatus.Published;
+
+            await _rep.UpdateAsync(obj);
+
+            return obj;
+        }
 
     }
 }

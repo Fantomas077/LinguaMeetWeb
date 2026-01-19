@@ -22,7 +22,8 @@ namespace LinguaMeet.Domain.Entities
         public int Capacity { get; set; }
         public string City { get; set; }
         public string Adresse { get; set; }
-        
+        public string CoverPhotoPath { get; set; }
+
 
     }
 }

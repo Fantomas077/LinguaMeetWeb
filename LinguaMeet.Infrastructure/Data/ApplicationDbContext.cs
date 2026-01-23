@@ -14,6 +14,7 @@ namespace LinguaMeet.Infrastructure.Data
 
         }
         public DbSet<Event>Events { get; set; }
+        public DbSet<EventRegistration> EventRegistrations { get; set; }
 
     }
     

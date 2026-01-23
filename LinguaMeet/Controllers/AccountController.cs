@@ -98,8 +98,50 @@ public class AccountController : Controller
         ModelState.AddModelError("", "Invalid login attempt");
         return View(model);
     }
+    [HttpGet]
+    public IActionResult ResetPassword()
+    {
+        return View();
+    }
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(ResetPasswordVM resetPassword)
+    {
+        if (!ModelState.IsValid)
+            return View(resetPassword);
 
-   
+        var user = await _userManager.FindByEmailAsync(resetPassword.EmailAdresse);
+
+        if (user == null)
+        {
+            ModelState.AddModelError("", "No account with this email address");
+            return View(resetPassword);
+        }
+
+        
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        
+        var result = await _userManager.ResetPasswordAsync(
+            user,
+            token,
+            resetPassword.NewPassword
+        );
+
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("", error.Description);
+        }
+
+        return View(resetPassword);
+    }
+
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]

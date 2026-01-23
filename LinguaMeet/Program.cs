@@ -1,3 +1,5 @@
+using LinguaMeet.Application.Common.Interfaces;
+using LinguaMeet.Application.Services;
 using LinguaMeet.Domain.Entities;
 using LinguaMeet.Infrastructure.Data;
 using LinguaMeet.Infrastructure.Identity;
@@ -14,6 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(builder.
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
 
 
 var app = builder.Build();

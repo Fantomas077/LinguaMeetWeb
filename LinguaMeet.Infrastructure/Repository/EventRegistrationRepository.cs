@@ -43,6 +43,18 @@ namespace LinguaMeet.Infrastructure.Repository
 
             return registrationsCount >= capacity;
         }
+        public async Task CancelRegistrationAsync(string userId, int eventId)
+        {
+            var registration = await _db.EventRegistrations
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.EventId == eventId && r.Status == RegistrationStatus.Registered);
+
+            if (registration != null)
+            {
+                registration.Status = RegistrationStatus.Cancelled;
+                 
+                await _db.SaveChangesAsync();
+            }
+        }
 
     }
 }

@@ -47,20 +47,24 @@ namespace LinguaMeet.Application.Services
             {
                 throw new InvalidEventOperationException("Event is full");
             }
+            var isFull = await _repRegis.IsEventFull(eventId);
 
             var newUserEvent = new EventRegistration
             {
                 RegisteredAt = DateTime.Now,
                 EventId = eventId,
                 UserId = userID,
-                Status=RegistrationStatus.Registered
-              
-
-                
+                 Status = isFull ? RegistrationStatus.Attended : RegistrationStatus.Registered
+               
 
             };
+           
+
             await _repRegis.AddAsync(newUserEvent);
         }
-
+        public async Task Cancel(int eventId, string userID)
+        {
+            await _repRegis.CancelRegistrationAsync(userID, eventId);
+        }
     }
 }

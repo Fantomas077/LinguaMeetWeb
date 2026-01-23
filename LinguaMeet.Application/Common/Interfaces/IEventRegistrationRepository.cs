@@ -10,5 +10,7 @@ namespace LinguaMeet.Application.Common.Interfaces
         Task AddAsync(EventRegistration eventRegistration);
         Task<bool> ExistsAsync(string userId, int eventId);
         Task<bool> IsEventFull( int eventId);
+        Task CancelRegistrationAsync(string userId, int eventId);
+
     }
 }

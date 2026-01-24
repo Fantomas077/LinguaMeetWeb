@@ -57,6 +57,11 @@ namespace LinguaMeet.Application.Services
                 await _rep.UpdateAsync(obj);
 
         }
+
+        public async Task<Event?> GetEventByIdAsync(int eventId)
+        {
+            return await _rep.GetEventByIdAsync(eventId);
+        }
         public async Task<IEnumerable<Event>> GetUpcomingEventsByCityAsync(string city)
         {
             var events = await _rep.GetEventsByCityAsync(city);
@@ -66,6 +71,13 @@ namespace LinguaMeet.Application.Services
 
             return upcomingEvents;
         }
+        public async Task<IEnumerable<Event>> GetUpcomingEventsAsync()
+        {
+            var events = await _rep.GetUpcomingEventsAsync();
+            var upcomingEvents = events.Where(o => o.StartDate > DateTime.Now && o.EventStatus == EventStatus.Published);
+            return upcomingEvents;
+        }
+
 
         public async Task<Event> CreateEventAsync(Event newEvent)
         {

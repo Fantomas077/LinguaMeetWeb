@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="LiguaMeetNUnitTest/LiguaMeetNUnitTest.csproj" Id="76577ae2-b01c-4cd3-ba8e-287248133ba7" />
   <Project Path="LinguaMeet.Application/LinguaMeet.Application.csproj" Id="74822d2b-26af-4923-9b30-4924a25f6a37" />
   <Project Path="LinguaMeet.Domain/LinguaMeet.Domain.csproj" Id="7d826cf4-dbbf-428f-be51-4f55b9a8c060" />
   <Project Path="LinguaMeet.Infrastructure/LinguaMeet.Infrastructure.csproj" Id="cb791284-bf28-4336-9b57-0f4c603ba2bf" />

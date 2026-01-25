@@ -60,7 +60,13 @@ namespace LinguaMeet.Application.Services
 
         public async Task<Event?> GetEventByIdAsync(int eventId)
         {
-            return await _rep.GetEventByIdAsync(eventId);
+            var obj= await _rep.GetEventByIdAsync(eventId);
+            if(obj==null)
+            {
+                throw new NotFoundException("Event No found");
+
+            }
+            return obj;
         }
         public async Task<IEnumerable<Event>> GetUpcomingEventsByCityAsync(string city)
         {

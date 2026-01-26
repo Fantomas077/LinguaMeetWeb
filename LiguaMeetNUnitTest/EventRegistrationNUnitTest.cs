@@ -33,10 +33,6 @@ namespace LiguaMeetNUnitTest
         public async Task RegisterEventAsync_ValidData_RegistersUser()
         {
 
-            // =====================
-            // ARRANGE
-            // =====================
-
             var userId = "user-1";
             var eventId = 1;
 
@@ -74,15 +70,10 @@ namespace LiguaMeetNUnitTest
                 mockRegRepo.Object
             );
 
-            // =====================
-            // ACT
-            // =====================
+           
 
             await service.RegisterEventAsync(eventId, userId);
 
-            // =====================
-            // ASSERT
-            // =====================
 
             mockRegRepo.Verify(
                 r => r.AddAsync(It.Is<EventRegistration>(

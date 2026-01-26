@@ -22,7 +22,7 @@ namespace LinguaMeet.Application.Services
             _repRegis = repRegis;
         }
 
-        public async Task Register(int eventId,string userID)
+        public async Task RegisterEventAsync(int eventId,string userID)
         {
 
             var obj = await _rep.GetEventByIdAsync(eventId);

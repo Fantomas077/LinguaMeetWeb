@@ -1,0 +1,49 @@
+﻿@model LinguaMeet.Domain.ViewModels.LoginVM
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<div class="d-flex justify-content-center align-items-center " style="background: #e8f1ff;">
+    <div class="card shadow p-4" style="width: 100%; max-width: 500px; background: #BABBB1;">
+
+        <h2 class="text-center mb-4 fw-bold text-primary">Anmeldung</h2>
+
+        <form asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="EmailAdresse" class="form-label fw-semibold">
+                    E‑Mail‑Adresse
+                </label>
+                <input asp-for="EmailAdresse" class="form-control" placeholder="z. B. name@mail.com" />
+                <span asp-validation-for="EmailAdresse" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-semibold">
+                    Passwort
+                </label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Ihr Passwort" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label">Angemeldet bleiben</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                Einloggen
+            </button>
+        </form>
+
+        <div class="mt-3 text-center">
+            <a asp-controller="Account" asp-action="ResetPassword" class="text-decoration-none text-secondary">
+                Passwort vergessen? Jetzt zurücksetzen
+            </a>
+        </div>
+  </div>
+</div>

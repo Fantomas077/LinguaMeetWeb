@@ -44,7 +44,7 @@ namespace LinguaMeet.Controllers
 
             try
             {
-                await _evRegistration.Register(eventId, userId);
+                await _evRegistration.RegisterEventAsync(eventId, userId);
                 TempData["Success"] = "You are registered successfully";
             }
             catch (Exception ex)

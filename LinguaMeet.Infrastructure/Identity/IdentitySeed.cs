@@ -10,7 +10,7 @@ namespace LinguaMeet.Infrastructure.Identity
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            // 1️⃣ Création des rôles
+            
             string[] roles = { "User", "Admin" };
 
             foreach (var role in roles)
@@ -27,7 +27,7 @@ namespace LinguaMeet.Infrastructure.Identity
                 }
             }
 
-            // 2️⃣ Création de l'admin par défaut
+            
             var adminEmail = "admin@linguameet.com";
             var adminPassword = "Admin123!";
 

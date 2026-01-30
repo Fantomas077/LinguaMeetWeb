@@ -19,7 +19,10 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Register()
     {
-        return View();
+        
+            return View(new RegisterVM());
+        
+
     }
 
     [HttpPost]
@@ -37,7 +40,7 @@ public class AccountController : Controller
         var existingUser = await _userManager.FindByEmailAsync(model.Email);
         if (existingUser != null)
         {
-            ModelState.AddModelError("", "This Email already exists");
+            ModelState.AddModelError("Email", "This Email already exists");
             return View(model);
         }
 
@@ -66,7 +69,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login()
     {
-        return View();
+        return View(new LoginVM());
     }
 
     [HttpPost]
@@ -101,7 +104,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult ResetPassword()
     {
-        return View();
+        return View(new ResetPasswordVM());
     }
     [HttpPost]
     public async Task<IActionResult> ResetPassword(ResetPasswordVM resetPassword)

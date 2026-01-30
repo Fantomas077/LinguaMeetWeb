@@ -120,7 +120,19 @@ public class AccountController : Controller
             return View(resetPassword);
         }
 
-        
+
+        var passwordCheck = await _signInManager.CheckPasswordSignInAsync(
+        user,
+        resetPassword.Password,
+        lockoutOnFailure: false
+        );
+
+        if (!passwordCheck.Succeeded)
+        {
+            ModelState.AddModelError("Password", "Current password is incorrect");
+            return View(resetPassword);
+        }
+
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
         

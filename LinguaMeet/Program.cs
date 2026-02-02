@@ -3,6 +3,7 @@ using LinguaMeet.Application.Services;
 using LinguaMeet.Domain.Entities;
 using LinguaMeet.Infrastructure.Data;
 using LinguaMeet.Infrastructure.Identity;
+using LinguaMeet.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,6 +17,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(builder.
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<EventRegistrationService>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventRegistrationRepository, EventRegistrationRepository>();
 
 
 

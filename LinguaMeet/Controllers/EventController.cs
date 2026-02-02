@@ -5,6 +5,8 @@ using LinguaMeet.Domain.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace LinguaMeet.Controllers
 {
@@ -55,7 +57,7 @@ namespace LinguaMeet.Controllers
             return RedirectToAction("Details", new { id = eventId });
         }
         [HttpPost]
-        [Authorize]
+     
         public async Task<IActionResult> CancelRegistration(int eventId)
         {
             var userId = _usermanager.GetUserId(User);
@@ -72,27 +74,49 @@ namespace LinguaMeet.Controllers
             return View();
         }
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EventVM model)
         {
+            // Validation du modèle
             if (!ModelState.IsValid)
                 return View(model);
 
-            //  Upload image
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/events");
-            Directory.CreateDirectory(uploadsFolder);
+ 
 
-            var fileName = Guid.NewGuid() + Path.GetExtension(model.CoverPhoto.FileName);
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            // Upload image
+            if (model.CoverPhoto != null)
             {
-                await model.CoverPhoto.CopyToAsync(stream);
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                var ext = Path.GetExtension(model.CoverPhoto.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(ext))
+                {
+                    ModelState.AddModelError("CoverPhoto", "Format d'image non supporté.");
+                    return View(model);
+                }
+
+                if (model.CoverPhoto.Length > 2 * 1024 * 1024)
+                {
+                    ModelState.AddModelError("CoverPhoto", "L'image ne doit pas dépasser 2MB.");
+                    return View(model);
+                }
+
+                string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "events");
+
+                if (!Directory.Exists(uploadFolder))
+                    Directory.CreateDirectory(uploadFolder);
+
+                model.CoverPhotoPath = Guid.NewGuid().ToString() + ext;
+                string imagePath = Path.Combine(uploadFolder, model.CoverPhotoPath);
+
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await model.CoverPhoto.CopyToAsync(stream);
+                }
             }
 
-            // Mapper to Event
+            // Mapping vers Event
             var newEvent = new Event
             {
                 Title = model.Title,
@@ -102,16 +126,16 @@ namespace LinguaMeet.Controllers
                 Capacity = model.Capacity,
                 City = model.City,
                 Adresse = model.Adresse,
-                EventType=model.EventType,
-                OnlineLink=model.OnlineLink,
-                CoverPhotoPath = "/images/events/" + fileName
+                EventType = model.EventType,
+                EventStatus = model.EventStatus,
+                OnlineLink = model.OnlineLink,
+                CoverPhotoPath = model.CoverPhotoPath != null ? "/images/events/" + model.CoverPhotoPath : null
             };
 
-            // Call service
             try
             {
                 await _evService.CreateEventAsync(newEvent);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
@@ -119,6 +143,7 @@ namespace LinguaMeet.Controllers
                 return View(model);
             }
         }
+
 
 
     }

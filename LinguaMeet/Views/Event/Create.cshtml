@@ -1,0 +1,156 @@
+﻿@model LinguaMeet.Domain.ViewModels.EventVM
+
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-white rounded-top-4 py-4"
+                     style="background: linear-gradient(135deg, #0d6efd, #4c8dff);">
+                    <h3 class="fw-bold mb-0">
+                        <i class="bi bi-calendar-plus me-2"></i>
+                        Create a New Event
+                    </h3>
+                    <p class="mb-0 opacity-75 small">Fill in the details below to publish your event</p>
+                </div>
+
+                <div class="card-body p-5">
+
+                    <form asp-action="Create" enctype="multipart/form-data">
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+
+                        <!-- TWO-COLUMN LAYOUT -->
+                        <div class="row g-4">
+
+                            <!-- LEFT COLUMN -->
+                            <div class="col-md-6">
+
+                                <!-- Title -->
+                                <div class="mb-4">
+                                    <label asp-for="Title" class="form-label fw-semibold"></label>
+                                    <input asp-for="Title" class="form-control rounded-3"
+                                           placeholder="Event title" />
+                                    <span asp-validation-for="Title" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Start Date -->
+                                <div class="mb-4">
+                                    <label asp-for="StartDate" class="form-label fw-semibold"></label>
+                                    <input asp-for="StartDate" type="datetime-local"
+                                           class="form-control rounded-3" />
+                                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Event Type -->
+                                <div class="mb-4">
+                                    <label asp-for="EventType" class="form-label fw-semibold"></label>
+                                    <select asp-for="EventType"
+                                            asp-items="Html.GetEnumSelectList<LinguaMeet.Domain.Entities.EventType>()"
+                                            class="form-select rounded-3">
+                                        <option value="">-- Select Event Type --</option>
+                                    </select>
+                                    <span asp-validation-for="EventType" class="text-danger small"></span>
+                                </div>
+
+                                <!-- City -->
+                                <div class="mb-4">
+                                    <label asp-for="City" class="form-label fw-semibold"></label>
+                                    <input asp-for="City" class="form-control rounded-3"
+                                           placeholder="City" />
+                                    <span asp-validation-for="City" class="text-danger small"></span>
+                                </div>
+
+                            </div>
+
+                            <!-- RIGHT COLUMN -->
+                            <div class="col-md-6">
+
+                                <!-- Description -->
+                                <div class="mb-4">
+                                    <label asp-for="Description" class="form-label fw-semibold"></label>
+                                    <textarea asp-for="Description" rows="4"
+                                              class="form-control rounded-3"
+                                              placeholder="Describe the event..."></textarea>
+                                    <span asp-validation-for="Description" class="text-danger small"></span>
+                                </div>
+
+                                <!-- End Date -->
+                                <div class="mb-4">
+                                    <label asp-for="EndDate" class="form-label fw-semibold"></label>
+                                    <input asp-for="EndDate" type="datetime-local"
+                                           class="form-control rounded-3" />
+                                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Capacity -->
+                                <div class="mb-4">
+                                    <label asp-for="Capacity" class="form-label fw-semibold"></label>
+                                    <input asp-for="Capacity" type="number" min="1"
+                                           class="form-control rounded-3" />
+                                    <span asp-validation-for="Capacity" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Address -->
+                                <div class="mb-4">
+                                    <label asp-for="Adresse" class="form-label fw-semibold"></label>
+                                    <input asp-for="Adresse" class="form-control rounded-3"
+                                           placeholder="Address" />
+                                    <span asp-validation-for="Adresse" class="text-danger small"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FULL-WIDTH FIELDS -->
+                        <div class="mt-4">
+
+                            <!-- Online Link -->
+                            <div class="mb-4">
+                                <label asp-for="OnlineLink" class="form-label fw-semibold"></label>
+                                <input asp-for="OnlineLink" class="form-control rounded-3"
+                                       placeholder="https://meeting-link.com" />
+                                <span asp-validation-for="OnlineLink" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Cover Photo -->
+                            <div class="mb-4">
+                                <label asp-for="CoverPhoto" class="form-label fw-semibold">Cover Photo</label>
+                                <input asp-for="CoverPhoto" type="file"
+                                       class="form-control rounded-3" accept="image/*" />
+                                <span asp-validation-for="CoverPhoto" class="text-danger small"></span>
+                                <div class="form-text">Accepted formats: JPG, PNG, WEBP (Max 2MB)</div>
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-light border rounded-3 px-4">
+                                ← Back
+                            </a>
+
+                            <button type="submit" class="btn btn-primary rounded-3 px-4 fw-semibold">
+                                Create Event
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

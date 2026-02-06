@@ -23,7 +23,7 @@ namespace LinguaMeet.Infrastructure.Repository
 
         public async  Task<Event?> GetEventByIdAsync(int eventId)
         {
-          return   await  _db.Events.FirstOrDefaultAsync(x => x.Id == eventId);
+          return   await  _db.Events.Include(r=>r.Registrations).FirstOrDefaultAsync(x => x.Id == eventId);
         }
 
         public async  Task<IEnumerable<Event>> GetEventsByCityAsync(string city)

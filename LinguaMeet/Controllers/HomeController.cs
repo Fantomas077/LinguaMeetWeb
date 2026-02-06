@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using LinguaMeet.Application.Services;
 using LinguaMeet.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,9 +7,16 @@ namespace LinguaMeet.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly EventService _eventservice;
+        public HomeController(EventService eventService)
         {
-            return View();
+            _eventservice = eventService;
+            
+        }
+        public async Task<IActionResult> Index()
+        {
+            var obj= await _eventservice.GetUpcomingEventsAsync();
+            return View(obj);
         }
 
         public IActionResult Privacy()

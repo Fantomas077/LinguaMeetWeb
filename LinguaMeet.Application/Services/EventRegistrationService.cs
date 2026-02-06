@@ -66,5 +66,25 @@ namespace LinguaMeet.Application.Services
         {
             await _repRegis.CancelRegistrationAsync(userID, eventId);
         }
+
+        public async Task<bool> IsRegisteredAsync(int eventId, string userId)
+        {
+            return await _repRegis.ExistsAsync(userId, eventId);
+        }
+        public async Task<int> GetRegisteredCountAsync(int eventId)
+        {
+            var evt = await _rep.GetEventByIdAsync(eventId);
+            if (evt == null)
+                throw new NotFoundException("Event not found");
+
+            int count = 0;
+            if (evt.Registrations != null)
+            {
+                count = evt.Registrations
+                           .Count(r => r.Status == RegistrationStatus.Registered);
+            }
+
+            return count;
+        }
     }
 }

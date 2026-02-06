@@ -1,0 +1,199 @@
+﻿@using LinguaMeet.Domain.Entities
+@model LinguaMeet.Domain.Entities.EventDetailsVM
+
+@{
+    ViewData["Title"] = Model.Event.Title;
+}
+
+<div class="container py-5">
+
+    <!-- HERO / COVER -->
+    <div class="mb-5">
+        <div class="position-relative rounded-4 overflow-hidden shadow-lg">
+
+            <img src="@Model.Event.CoverPhotoPath"
+                 class="img-fluid w-100"
+                 style="max-height: 50vh; object-fit: cover;"
+                 alt="@Model.Event.Title" />
+
+            <div class="position-absolute top-0 start-0 w-100 h-100"
+                 style="background: linear-gradient(120deg, rgba(15,23,42,.9), rgba(15,23,42,.2));">
+            </div>
+
+            <div class="position-absolute bottom-0 start-0 end-0 p-4 p-md-5 text-white">
+                <span class="badge bg-primary bg-opacity-75 mb-2 px-3 py-2 rounded-pill">
+                    <i class="bi bi-calendar-event me-1"></i> @Model.Event.EventType
+                </span>
+
+                <h1 class="fw-bold display-5 mb-2">@Model.Event.Title</h1>
+
+                <div class="d-flex flex-wrap gap-3 small opacity-75">
+                    <div>
+                        <i class="bi bi-calendar3 me-1"></i>
+                        @Model.Event.StartDate.ToString("dd.MM.yyyy HH:mm")
+                    </div>
+                    <div>
+                        <i class="bi bi-geo-alt me-1"></i>
+                        @(string.IsNullOrEmpty(Model.Event.City) ? "Online" : Model.Event.City)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="row g-4">
+
+        <!-- LEFT : DESCRIPTION -->
+        <div class="col-lg-8">
+            <div class="bg-white border rounded-4 shadow-sm p-4 p-md-5">
+                <h2 class="h4 mb-3">Beschreibung</h2>
+                <div class="fs-5 text-muted lh-lg">
+                    @Html.Raw(Model.Event.Description)
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT : SIDEBAR -->
+        <div class="col-lg-4">
+            <div class="bg-white border rounded-4 shadow-sm h-100">
+                <div class="card-body p-4 d-flex flex-column">
+
+                    <h5 class="text-secondary mb-4">
+                        <i class="bi bi-info-circle me-1 text-primary"></i> Eventdetails
+                    </h5>
+
+                    <!-- EVENT DETAILS GRID -->
+                    <div class="row g-3">
+
+                        <!-- START -->
+                        <div class="col-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="small text-muted">Start</div>
+                                <div class="fw-semibold">
+                                    @Model.Event.StartDate.ToString("dd.MM.yyyy")
+                                </div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-clock me-1"></i>
+                                    @Model.Event.StartDate.ToString("HH:mm")
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- END -->
+                        <div class="col-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="small text-muted">Ende</div>
+                                <div class="fw-semibold">
+                                    @Model.Event.EndDate.ToString("dd.MM.yyyy")
+                                </div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-clock me-1"></i>
+                                    @Model.Event.EndDate.ToString("HH:mm")
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ORT -->
+                        <div class="col-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="small text-muted mb-1">Ort</div>
+
+                                @if (Model.Event.EventType == LinguaMeet.Domain.Entities.EventType.Meet)
+                                {
+                                    <div>
+                                        <i class="bi bi-geo-alt me-1 text-primary"></i>
+                                        @Model.Event.City
+                                    </div>
+                                    <div class="text-muted small">
+                                        @Model.Event.Adresse
+                                    </div>
+                                }
+
+                                @if (Model.Event.EventType == EventType.Online)
+                                {
+                                    <div>
+                                        <i class="bi bi-wifi me-1 text-primary"></i>
+                                        <a href="@Model.Event.OnlineLink" target="_blank">
+                                            Online Veranstaltung öffnen
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- TEILNEHMER -->
+                        <div class="col-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="small text-muted mb-1">Teilnehmer</div>
+                                <div class="fw-semibold">
+                                    <i class="bi bi-people me-1 text-primary"></i>
+                                    @Model.RegisteredCount
+                                    @if (Model.Event.Capacity > 0)
+                                    {
+                                        <span class="text-muted">/ @Model.Event.Capacity</span>
+                                    }
+                                </div>
+
+                                @if (Model.IsFull)
+                                {
+                                    <span class="badge bg-danger-subtle text-danger mt-2">
+                                        Veranstaltung ist voll
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ACTION BUTTON -->
+                    <div class="mt-auto pt-4 border-top">
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            if (Model.IsRegistered)
+                            {
+                                <form asp-controller="Event"
+                                      asp-action="CancelRegistration"
+                                      asp-route-eventId="@Model.Event.Id"
+                                      method="post">
+                                    <button class="btn btn-outline-danger btn-lg w-100 rounded-pill">
+                                        Anmeldung stornieren
+                                    </button>
+                                </form>
+                            }
+                            else if (Model.IsFull)
+                            {
+                                <button class="btn btn-secondary btn-lg w-100 rounded-pill" disabled>
+                                    Event ist voll
+                                </button>
+                            }
+                            else
+                            {
+                                <form asp-controller="Event"
+                                      asp-action="Register"
+                                      asp-route-eventId="@Model.Event.Id"
+                                      method="post">
+                                    <button class="btn btn-primary btn-lg w-100 rounded-pill">
+                                        Jetzt anmelden
+                                    </button>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               class="btn btn-outline-primary btn-lg w-100 rounded-pill">
+                                Einloggen zum Anmelden
+                            </a>
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace LinguaMeet.Controllers
 {
@@ -23,21 +24,42 @@ namespace LinguaMeet.Controllers
             _evRegistration = evRegistration;
             _usermanager = usermanager;
         }
-        [HttpPost]
+        
         public async Task<IActionResult> Index()
         {
             var obj = await _evService.GetUpcomingEventsAsync();
             return View(obj);
            
         }
-        [HttpPost]
+
 
         public async Task<IActionResult> Details(int id)
         {
-            var obj = await _evService.GetEventByIdAsync(id);
-            return View(obj);
             
+            var ev = await _evService.GetEventByIdAsync(id);
+            if (ev == null)
+                return NotFound();
+
+            
+            var userId = _usermanager.GetUserId(User);
+
+            
+            bool isRegistered = userId != null && await _evRegistration.IsRegisteredAsync(id, userId);
+            int registeredCount = await _evRegistration.GetRegisteredCountAsync(id);
+
+            
+            var vm = new EventDetailsVM
+            {
+                Event = ev,
+                RegisteredCount = registeredCount,
+                IsRegistered = isRegistered
+            };
+
+            return View(vm);
         }
+
+
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Register(int eventId)
@@ -54,8 +76,10 @@ namespace LinguaMeet.Controllers
                 TempData["Error"] = ex.Message;
             }
 
+            
             return RedirectToAction("Details", new { id = eventId });
         }
+
         [HttpPost]
      
         public async Task<IActionResult> CancelRegistration(int eventId)
@@ -67,7 +91,7 @@ namespace LinguaMeet.Controllers
             TempData["Success"] = "Registration cancelled";
             return RedirectToAction("Details", new { id = eventId });
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult>Create()
         {
@@ -78,7 +102,7 @@ namespace LinguaMeet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EventVM model)
         {
-            // Validation du modèle
+           
             if (!ModelState.IsValid)
                 return View(model);
 

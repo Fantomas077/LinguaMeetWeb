@@ -1,8 +1,118 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
+<div class="container rounded-4 p-5 text-white"
+     style="background: linear-gradient(135deg, #325D88, #27496d); box-shadow: 0 10px 25px rgba(0,0,0,.15);">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="row align-items-center">
+
+        <!-- LEFT TEXT -->
+        <div class="col-lg-7">
+
+            <h1 class="display-5 fw-bold mb-3">
+                Lerne Sprachen. Triff Menschen. Tausche Kulturen.
+            </h1>
+
+            <p class="lead mb-4 opacity-90">
+                LinguaMeet verbindet Sprachlernende aus der ganzen Welt
+                für echte Tandem-Gespräche – online oder vor Ort.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3">
+
+                <a href="#tandems"
+                   class="btn btn-light btn-lg fw-semibold px-4 rounded-pill shadow-sm remember">
+                     Tandems entdecken
+                </a>
+
+                <a asp-controller="Event"
+                   asp-action="Create"
+                   class="btn btn-outline-light btn-lg fw-semibold px-4 rounded-pill">
+                     Tandem erstellen
+                </a>
+
+            </div>
+        </div>
+
+    </div>
 </div>
+
+
+<!-- UPCOMING TANDEMS -->
+<section id="tandems" class="container my-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold"> Kommende Sprach-Tandems</h2>
+            <p class="text-muted">
+                Nimm an geplanten Sprachsessions teil oder finde deinen nächsten Lernpartner.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var evt in Model)
+        {
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0 rounded-4 hover-shadow transition">
+                    <img src="@evt.CoverPhotoPath"
+                         class="card-img-top rounded-top-4"
+                         alt="@evt.Title"
+                         style="height: 200px; object-fit: cover;" />
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-semibold">@evt.Title</h5>
+
+                        <p class="text-muted mb-3 text-truncate">
+                            @evt.Description
+                        </p>
+
+                        <a asp-controller="Event"
+                           asp-action="Details"
+                           asp-route-id="@evt.Id"
+                           class="btn btn-outline-primary mt-auto">
+                            Details ansehen →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- WHY LINGUAMEET -->
+<section class="py-5" style="background: linear-gradient(135deg, #f8fafc);">
+    <div class="container">
+        <div class="row text-center">
+
+            <div class="col-md-4">
+                <div class="p-4">
+                    <h5 class="fw-bold">International</h5>
+                    <p class="text-muted">
+                        Lerne mit Muttersprachlern aus der ganzen Welt.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-4">
+                    <h5 class="fw-bold">Echt & praxisnah</h5>
+                    <p class="text-muted">
+                        Keine Theorie – echte Gespräche, echte Menschen.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-4">
+                    <h5 class="fw-bold">Tandem-Prinzip</h5>
+                    <p class="text-muted">
+                        Du hilfst, du lernst – fair und motivierend.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+

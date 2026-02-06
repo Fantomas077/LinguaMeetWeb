@@ -24,8 +24,11 @@ namespace LinguaMeet.Infrastructure.Repository
         public async Task<bool> ExistsAsync(string userId, int eventId)
         {
             return await _db.EventRegistrations
-                .AnyAsync(x => x.UserId == userId && x.EventId == eventId);
+                .AnyAsync(r => r.UserId == userId
+                              && r.EventId == eventId
+                              && r.Status == RegistrationStatus.Registered);
         }
+
 
         public async Task<bool> IsEventFull(int eventId)
         {
@@ -51,7 +54,7 @@ namespace LinguaMeet.Infrastructure.Repository
             if (registration != null)
             {
                 registration.Status = RegistrationStatus.Cancelled;
-                 
+                
                 await _db.SaveChangesAsync();
             }
         }

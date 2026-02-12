@@ -7,6 +7,8 @@
 
 ## Technologien
 - ASP.NET Core MVC  
-- Entity Framework Core  
+- Entity Framework Core
+- NUnit
+- Moq
 - SQL Server / SQLite  
 - HTML, CSS, JavaScript , Bootstrap 5

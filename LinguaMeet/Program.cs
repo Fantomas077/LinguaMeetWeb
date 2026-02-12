@@ -19,8 +19,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<EventRegistrationService>();
+builder.Services.AddScoped<AdminService>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventRegistrationRepository, EventRegistrationRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+
 
 
 

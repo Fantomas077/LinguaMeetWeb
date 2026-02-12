@@ -1,0 +1,200 @@
+﻿@using LinguaMeet.Domain.Entities
+@model LinguaMeet.Domain.ViewModels.MyEventsVM
+
+@{
+    ViewData["Title"] = "My Events";
+}
+
+<div class="container py-5">
+
+    <h2 class="fw-bold mb-4">
+        <i class="bi bi-calendar-event me-2"></i>
+        My Events
+    </h2>
+
+    <!-- TABS -->
+    <ul class="nav nav-pills mb-4" id="eventsTab" role="tablist">
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-pill px-4"
+                    id="created-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#created"
+                    type="button">
+                My Created Events (@Model.Created.Count)
+            </button>
+        </li>
+
+        <li class="nav-item ms-2" role="presentation">
+            <button class="nav-link rounded-pill px-4"
+                    id="joined-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#joined"
+                    type="button">
+                Events I Joined (@Model.Joined.Count)
+            </button>
+        </li>
+
+    </ul>
+
+    <div class="tab-content">
+
+        <!-- CREATED EVENTS -->
+        <div class="tab-pane fade show active" id="created">
+
+            @if (!Model.Created.Any())
+            {
+                <div class="alert alert-info rounded-3">
+                    You haven't created any events yet.
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+
+                    @foreach (var ev in Model.Created)
+                    {
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                                <img src="@ev.CoverPhotoPath"
+                                     class="card-img-top"
+                                     style="height:200px; object-fit:cover;" />
+
+                                <div class="card-body d-flex flex-column">
+
+                                    <h5 class="fw-bold">@ev.Title</h5>
+
+                                    <span class="badge @(ev.EventStatus == LinguaMeet.Domain.Entities.EventStatus.Published ? "bg-success"
+                                                                                                  : ev.EventStatus == EventStatus.Cancelled ? "bg-danger"
+                                                                                                  : "bg-secondary") mb-2">
+                                        @ev.EventStatus
+                                    </span>
+
+                                    <p class="text-muted small mb-2">
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        @ev.StartDate.ToString("dd MMM yyyy HH:mm")
+                                    </p>
+
+                                    <p class="text-muted small mb-3">
+                                        <i class="bi bi-geo-alt me-1"></i>
+                                        @(string.IsNullOrEmpty(ev.City) ? "Online" : ev.City)
+                                    </p>
+
+                                    <div class="mt-auto">
+
+                                        <a asp-controller="Event"
+                                           asp-action="Details"
+                                           asp-route-id="@ev.Id"
+                                           class="btn btn-outline-primary w-100 rounded-pill mb-2">
+                                            Details
+                                        </a>
+
+                                        <a asp-controller="Event"
+                                           asp-action="Edit"
+                                           asp-route-id="@ev.Id"
+                                           class="btn btn-outline-secondary w-100 rounded-pill mb-2">
+                                            Edit
+                                        </a>
+                                        <form asp-controller="Event"
+                                              asp-action="CancelEventAsync"
+                                              asp-route-eventId="@ev.Id"
+                                              method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn btn-outline-danger w-100 rounded-pill">
+                                                Cancel
+                                            </button>
+                                        </form>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+        <!-- JOINED EVENTS -->
+        <div class="tab-pane fade" id="joined">
+
+            @if (!Model.Joined.Any())
+            {
+                <div class="alert alert-info rounded-3">
+                    You are not registered in any event yet.
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+
+                    @foreach (var ev in Model.Joined)
+                    {
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                                <img src="@ev.CoverPhotoPath"
+                                     class="card-img-top"
+                                     style="height:200px; object-fit:cover;" />
+
+                                <div class="card-body d-flex flex-column">
+
+                                    <h5 class="fw-bold">@ev.Title</h5>
+
+                                    <span class="badge @(ev.EventStatus == EventStatus.Published ? "bg-success"
+                                                                                                  : ev.EventStatus == EventStatus.Cancelled ? "bg-danger"
+                                                                                                  : "bg-secondary") mb-2">
+                                        @ev.EventStatus
+                                    </span>
+
+                                    <p class="text-muted small mb-2">
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        @ev.StartDate.ToString("dd MMM yyyy HH:mm")
+                                    </p>
+
+                                    <p class="text-muted small mb-3">
+                                        <i class="bi bi-geo-alt me-1"></i>
+                                        @(string.IsNullOrEmpty(ev.City) ? "Online" : ev.City)
+                                    </p>
+
+                                    <div class="mt-auto">
+
+                                        <a asp-controller="Event"
+                                           asp-action="Details"
+                                           asp-route-id="@ev.Id"
+                                           class="btn btn-primary w-100 rounded-pill mb-2">
+                                            View Event
+                                        </a>
+
+                                        <form asp-controller="Event"
+                                              asp-action="CancelRegistration"
+                                              asp-route-eventId="@ev.Id"
+                                              method="post">
+                                            <button class="btn btn-outline-danger w-100 rounded-pill">
+                                                Cancel Registration
+                                            </button>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

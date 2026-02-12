@@ -58,6 +58,15 @@ namespace LinguaMeet.Infrastructure.Repository
                 await _db.SaveChangesAsync();
             }
         }
+        public async Task<List<Event>> GetEventsJoinedByUserAsync(string userId)
+        {
+            return await _db.EventRegistrations
+                .Where(ep => ep.UserId == userId && ep.Status==RegistrationStatus.Registered)
+                .Select(ep => ep.Event)
+                .OrderBy(e => e.StartDate)
+                .ToListAsync();
+        }
+
 
     }
 }

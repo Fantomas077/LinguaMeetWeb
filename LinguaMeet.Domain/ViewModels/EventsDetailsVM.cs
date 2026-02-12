@@ -1,8 +1,9 @@
-﻿using System;
+﻿using LinguaMeet.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LinguaMeet.Domain.Entities
+namespace LinguaMeet.Domain.ViewModels
 {
     public class EventDetailsVM
     {

@@ -86,5 +86,10 @@ namespace LinguaMeet.Application.Services
 
             return count;
         }
+        public async Task<List<Event>> GetEventsJoinedByUserAsync(string userId)
+        {
+            return await _repRegis.GetEventsJoinedByUserAsync(userId);
+        }
+
     }
 }

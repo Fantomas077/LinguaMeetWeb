@@ -1,0 +1,169 @@
+﻿@using LinguaMeet.Domain.Entities
+@model LinguaMeet.Domain.ViewModels.MyAdminVM
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container py-5">
+
+    <h2 class="fw-bold mb-4">
+        <i class="bi bi-speedometer2 me-2"></i>
+        Admin Dashboard
+    </h2>
+
+    <!-- TABS -->
+    <ul class="nav nav-pills mb-4" role="tablist">
+
+        <li class="nav-item">
+            <button class="nav-link active rounded-pill px-4"
+                    data-bs-toggle="pill"
+                    data-bs-target="#events">
+                Events (@Model.ListEvents.Count)
+            </button>
+        </li>
+
+        <li class="nav-item ms-2">
+            <button class="nav-link rounded-pill px-4"
+                    data-bs-toggle="pill"
+                    data-bs-target="#users">
+                Users (@Model.ListUsers.Count)
+            </button>
+        </li>
+
+    </ul>
+
+    <div class="tab-content">
+
+        <!-- EVENTS TAB -->
+        <div class="tab-pane fade show active" id="events">
+
+            @if (!Model.ListEvents.Any())
+            {
+                <div class="alert alert-info">No events found.</div>
+            }
+            else
+            {
+                <div class="row g-4">
+
+                    @foreach (var ev in Model.ListEvents)
+                    {
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                                <img src="@ev.CoverPhotoPath"
+                                     class="card-img-top"
+                                     style="height:200px; object-fit:cover;" />
+
+                                <div class="card-body d-flex flex-column">
+
+                                    <h5 class="fw-bold">@ev.Title</h5>
+
+                                    <span class="badge @(ev.EventStatus == EventStatus.Published ? "bg-success"
+                                                                                                  : ev.EventStatus == EventStatus.Cancelled ? "bg-danger"
+                                                                                                  : "bg-secondary") mb-2">
+                                        @ev.EventStatus
+                                    </span>
+
+                                    <p class="text-muted small">
+                                        <i class="bi bi-calendar3"></i>
+                                        @ev.StartDate.ToString("dd MMM yyyy HH:mm")
+                                    </p>
+
+                                    <p class="text-muted small mb-3">
+                                        <i class="bi bi-geo-alt"></i>
+                                        @(string.IsNullOrEmpty(ev.City) ? "Online" : ev.City)
+                                    </p>
+
+                                    <div class="mt-auto">
+
+                                        <a asp-controller="Event"
+                                           asp-action="Details"
+                                           asp-route-id="@ev.Id"
+                                           class="btn btn-outline-primary w-100 rounded-pill mb-2">
+                                            Details
+                                        </a>
+
+                                        <form asp-controller="Event"
+                                              asp-action="Delete"
+                                              asp-route-id="@ev.Id"
+                                              method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn btn-outline-danger w-100 rounded-pill">
+                                                Delete Event
+                                            </button>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+        <!-- USERS TAB -->
+        <div class="tab-pane fade" id="users">
+
+            @if (!Model.ListUsers.Any())
+            {
+                <div class="alert alert-info">No users found.</div>
+            }
+            else
+            {
+                <div class="row g-4">
+
+                    @foreach (var user in Model.ListUsers)
+                    {
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                                <div class="card-body d-flex flex-column">
+
+                                    <h5 class="fw-bold">@user.FullName</h5>
+
+                                    <p class="text-muted small mb-1">
+                                        <i class="bi bi-envelope"></i>
+                                        @user.Email
+                                    </p>
+
+                                    <p class="text-muted small mb-3">
+                                        <i class="bi bi-calendar"></i>
+                                        Joined @user.CreatedDate.ToString("dd MMM yyyy")
+                                    </p>
+
+                                    <div class="mt-auto">
+
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteUser"
+                                              asp-route-id="@user.Id"
+                                              method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn btn-outline-danger w-100 rounded-pill">
+                                                Delete User
+                                            </button>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

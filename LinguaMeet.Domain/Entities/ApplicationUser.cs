@@ -10,5 +10,12 @@ namespace LinguaMeet.Domain.Entities
 
         public string FullName { get; set; }
         public DateTime CreatedDate { get; set; }
+
+
+        // Events créés par l'utilisateur
+        public ICollection<Event> Events { get; set; } = new List<Event>();
+
+        // Inscriptions aux events
+        public ICollection<EventRegistration> EventRegistrations { get; set; } = new List<EventRegistration>();
     }
 }

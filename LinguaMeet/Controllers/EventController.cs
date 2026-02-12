@@ -1,4 +1,5 @@
-﻿using LinguaMeet.Application.Common.Interfaces;
+﻿using LinguaMeet.Application.Common.Exceptions;
+using LinguaMeet.Application.Common.Interfaces;
 using LinguaMeet.Application.Services;
 using LinguaMeet.Domain.Entities;
 using LinguaMeet.Domain.ViewModels;
@@ -31,6 +32,47 @@ namespace LinguaMeet.Controllers
             return View(obj);
            
         }
+        [Authorize]
+        public async Task<IActionResult> MyEvent()
+        {
+            var user = await _usermanager.GetUserAsync(User);
+            if (user == null)
+                return Challenge();
+
+            var vm = new MyEventsVM
+            {
+                Created = await _evService.GetEventsCreatedByUserAsync(user.Id),
+                Joined = await _evRegistration.GetEventsJoinedByUserAsync(user.Id)
+            };
+
+            return View(vm);
+        }
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task <IActionResult>CancelEventAsync(int eventId)
+        {
+            var obj = await _evService.GetEventByIdAsync(eventId);
+            if (obj == null)
+            {
+                throw new NotFoundException("Event not found");
+            }
+            try
+            {
+                await _evService.CancelEventAsync(eventId);
+                TempData["Success"] = "You are Cancel successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+
+            return RedirectToAction("Index","Home");
+
+        }
+
+
 
 
         public async Task<IActionResult> Details(int id)
@@ -105,6 +147,7 @@ namespace LinguaMeet.Controllers
            
             if (!ModelState.IsValid)
                 return View(model);
+            var userId = _usermanager.GetUserId(User);
 
  
 
@@ -153,7 +196,8 @@ namespace LinguaMeet.Controllers
                 EventType = model.EventType,
                 EventStatus = model.EventStatus,
                 OnlineLink = model.OnlineLink,
-                CoverPhotoPath = model.CoverPhotoPath != null ? "/images/events/" + model.CoverPhotoPath : null
+                CoverPhotoPath = model.CoverPhotoPath != null ? "/images/events/" + model.CoverPhotoPath : null,
+                UserId=userId
             };
 
             try

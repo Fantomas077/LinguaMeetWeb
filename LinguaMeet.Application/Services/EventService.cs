@@ -2,6 +2,7 @@
 using LinguaMeet.Application.Common.Exceptions;
 using LinguaMeet.Application.Common.Interfaces;
 using LinguaMeet.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -17,6 +18,7 @@ namespace LinguaMeet.Application.Services
             _rep = rep;
             
         }
+        
         public async Task CancelEventAsync(int eventId)
         {
             var obj = await _rep.GetEventByIdAsync(eventId);
@@ -83,7 +85,11 @@ namespace LinguaMeet.Application.Services
             var upcomingEvents = events.Where(o => o.StartDate > DateTime.Now && o.EventStatus == EventStatus.Published);
             return upcomingEvents;
         }
-
+        public async Task<IEnumerable<Event>> GetAllEvent()
+        {
+            var obj = await _rep.GetAllEvent();
+            return obj;
+        }
 
         public async Task<Event> CreateEventAsync(Event newEvent)
         {
@@ -152,6 +158,11 @@ namespace LinguaMeet.Application.Services
 
             return obj;
         }
+        public async Task<List<Event>> GetEventsCreatedByUserAsync(string userId)
+        {
+            return await _rep.GetEventsCreatedByUserAsync(userId);
+        }
+
 
     }
 }

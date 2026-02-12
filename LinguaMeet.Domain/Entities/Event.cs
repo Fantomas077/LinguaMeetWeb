@@ -24,6 +24,9 @@ namespace LinguaMeet.Domain.Entities
         public string Adresse { get; set; }
         public string ?CoverPhotoPath { get; set; }
 
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
+
         public ICollection<EventRegistration> Registrations { get; set; }
 
 
